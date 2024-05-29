@@ -1,6 +1,6 @@
 {
   "name": "vakyavahan",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "VakyaVahan, which translates to 'carrier of words' in Sanskrit, is a robust SMS API designed to streamline and elevate your mobile communication. VakyaVahan empowers you to send text messages with efficiency and purpose.",
   "main": "build/index.js",
   "scripts": {

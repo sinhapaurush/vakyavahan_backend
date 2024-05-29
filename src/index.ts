@@ -7,6 +7,7 @@ import http, { Server as HTTPServer } from "http";
 import { router as sendSMSRouter } from "./send-sms";
 import { router as newClientRouter } from "./new-client";
 import SocketHandler from "./methods/socket";
+import { deleteUnusedAccountsEveryWeek } from "./methods/delete-spam";
 
 // CONFIGURING .env
 dotenv.config();
@@ -23,12 +24,14 @@ export const wsObject = new SocketHandler(server);
 app.use(sendSMSRouter);
 app.use(newClientRouter);
 
-// ROOT ROUTE
-app.get("/", (req: Request, res: Response) => {
-  res.json(req.query);
+// NOT FOUND ROUTE
+app.get("*", (req: Request, res: Response) => {
+  res.statusCode = 404;
+  res.json({ status: 404, message: "Invalid Request" });
 });
 
 // RUNNING SERVER
 server.listen(PORT, (): void => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+deleteUnusedAccountsEveryWeek();

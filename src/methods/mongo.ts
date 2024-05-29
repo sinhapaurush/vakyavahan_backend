@@ -1,5 +1,6 @@
 import {
   Db,
+  DeleteResult,
   InsertOneResult,
   MongoClient,
   ObjectId,
@@ -69,6 +70,31 @@ class DBHandler {
     if (closeConnection) this.close();
 
     return response.acknowledged;
+  }
+
+  /**
+   * @description Deletes multiple documents.
+   * @author Paurush Sinha
+   * @param collectionName Collection to filter records in
+   * @param filter Filter to select documents to delte
+   * @param closeConnection true, if you want to close connection after it.
+   * @returns true if success
+   */
+  async deleteMultipleRecords(
+    collectionName: CollectionName,
+    filter: Object,
+    closeConnection?: boolean
+  ) {
+    const collection = this.connectedDb.collection(collectionName);
+    const acknowledged: DeleteResult = await collection.deleteMany(filter);
+
+    if (closeConnection) this.close();
+
+    if (acknowledged.acknowledged) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**

@@ -19,8 +19,10 @@ export default class SocketHandler {
 
   private initializeSocket() {
     this.io.on("connection", (socket: Socket) => {
+
       socket.on("credentials", async (credentials) => {
         if (credentials.client && credentials.auth) {
+
           const successInInsertion: boolean = await addSocketIDinDB(
             credentials.clientToken,
             credentials.authToken,
@@ -30,6 +32,7 @@ export default class SocketHandler {
             socket.disconnect();
           }
         } else {
+          this.disconnectSocketFromDB(socket.id);
           socket.disconnect();
         }
       });

@@ -19,7 +19,7 @@ export default async function addSocketIDinDB(
     acknowledgement = await db.updateRecord(
       CollectionName.client,
       { clienttoken: clienttoken, authid: auth },
-      { socketid: socketid },
+      { socketid: socketid, lastconnection: new Date().valueOf() },
       true
     );
   } catch {

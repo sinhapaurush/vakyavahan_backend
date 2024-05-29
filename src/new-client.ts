@@ -1,22 +1,21 @@
 import { Request, Response, Router } from "express";
-import validateMail from "./methods/validate-mail";
 import createNewUser from "./methods/new-user";
 
 const router: Router = Router();
 
 router.post("/new-client", async (req: Request, res: Response) => {
-  let { name, organization, mail, password } = req.query;
-  if (name && organization && mail && password) {
+  let { name, organization, deviceId, password } = req.query;
+  if (name && organization && deviceId && password) {
     try {
-      mail = mail.toString().toLowerCase();
+      deviceId = deviceId.toString().toLowerCase();
       name = name.toString();
       organization = organization.toString();
       password = password.toString();
-      if (name.length > 3 && validateMail(mail) && password.length > 8) {
+      if (name.length > 3 && deviceId && password.length > 8) {
         const dbStatus = await createNewUser({
           name,
           organization,
-          mail,
+          deviceId,
           password,
         });
         if (dbStatus) {

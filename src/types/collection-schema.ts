@@ -4,11 +4,12 @@ export interface Client {
   _id?: ObjectId;
   name: string;
   organization: string;
-  mail: string;
+  deviceId: string;
   password: string;
   socketid: string | null;
   authid: string;
   clienttoken: string;
+  lastconnection: number;
 }
 
 export interface Message {
@@ -16,5 +17,5 @@ export interface Message {
   message: string;
   from: ObjectId;
   to: string;
-  timestamp: Date;
+  timestamp: number;
 }
