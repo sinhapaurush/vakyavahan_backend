@@ -1,8 +1,12 @@
+/**
+ * @author Paurush Sinha
+ */
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import http, { Server as HTTPServer } from "http";
 import { router as sendSMSRouter } from "./send-sms";
-import socketHandler from "./methods/socket";
+import { router as newClientRouter } from "./new-client";
+import SocketHandler from "./methods/socket";
 
 // CONFIGURING .env
 dotenv.config();
@@ -13,10 +17,11 @@ const app: Express = express();
 const server: HTTPServer = http.createServer(app);
 
 // INVOKING SOCKET HANDLER FROM EXTERNAL FILE
-socketHandler(server);
+export const wsObject = new SocketHandler(server);
 
 // CONFIGURING EXTERNAL ROUTES
 app.use(sendSMSRouter);
+app.use(newClientRouter);
 
 // ROOT ROUTE
 app.get("/", (req: Request, res: Response) => {

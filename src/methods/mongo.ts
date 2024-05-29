@@ -19,8 +19,8 @@ export enum CollectionName {
  * @author Paurush Sinha
  */
 class DBHandler {
-  connection: MongoClient;
-  connectedDb: Db;
+  private connection: MongoClient;
+  private connectedDb: Db;
 
   constructor() {
     this.connection = new MongoClient(DB_URI);
@@ -85,14 +85,14 @@ class DBHandler {
     filter: Object,
     setObject: Object,
     closeConnection?: boolean
-  ) {
+  ): Promise<boolean> {
     const collection = this.connectedDb.collection(collectionName);
     let response: UpdateResult | null = null;
     try {
       response = await collection.updateOne(filter, { $set: setObject });
     } finally {
       if (closeConnection) this.close();
-      return response?.acknowledged;
+      return response?.acknowledged ?? false;
     }
   }
 

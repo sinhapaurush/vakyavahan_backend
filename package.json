@@ -1,6 +1,6 @@
 {
   "name": "vakyavahan",
-  "version": "1.0.0",
+  "version": "0.0.5",
   "description": "VakyaVahan, which translates to 'carrier of words' in Sanskrit, is a robust SMS API designed to streamline and elevate your mobile communication. VakyaVahan empowers you to send text messages with efficiency and purpose.",
   "main": "build/index.js",
   "scripts": {
@@ -22,6 +22,7 @@
     "@types/socket.io": "^3.0.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "js-sha256": "^0.11.0",
     "mongodb": "^6.6.2",
     "socket.io": "^4.7.5"
   }
