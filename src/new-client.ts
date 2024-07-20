@@ -1,42 +1,46 @@
 import { Request, Response, Router } from "express";
-import createNewUser from "./methods/new-user";
+import { checkRequest, RequestExamination, RequestMetaData } from "./methods/check-request";
+import { RequestContentType } from "./types/request-type";
+import { createNewUser, NewUserProcessResponse } from "./methods/new-user";
+import { Collection, Db, MongoClient } from "mongodb";
 
-const router: Router = Router();
+const router = Router();
 
-router.post("/new-client", async (req: Request, res: Response) => {
-  let { name, organization, deviceId, password } = req.query;
-  if (name && organization && deviceId && password) {
-    try {
-      deviceId = deviceId.toString().toLowerCase();
-      name = name.toString();
-      organization = organization.toString();
-      password = password.toString();
-      if (name.length > 3 && deviceId && password.length > 8) {
-        const dbStatus = await createNewUser({
-          name,
-          organization,
-          deviceId,
-          password,
-        });
-        if (dbStatus) {
-          res.statusCode = 200;
-          res.json({ status: 200, message: "Success" });
-        } else {
-          res.statusCode = 400;
-          res.json({ status: 400, message: "Invalid Request" });
-        }
+const acceptedRequest: RequestMetaData = {
+  contentType: RequestContentType.json,
+  parameters: [
+    "name",
+    "org",
+    "deviceid"
+  ]
+};
+router.post("/new-user", async (req: Request, res: Response) => {
+  const requestExaminationResult: RequestExamination = checkRequest(req, acceptedRequest);
+  if (requestExaminationResult.result) {
+    const { name, org, deviceid } = requestExaminationResult.params;
+
+    if (name.length > 2 && org.length > 3 && deviceid.length > 8) {
+
+      const dbResponse: NewUserProcessResponse = await createNewUser(name, org, deviceid);
+      if (dbResponse.success) {
+        res.status(200);
+        res.json({ status: 200, message: "Ok", authtoken: dbResponse.client?.authid, clienttoken: dbResponse.client?.clienttoken });
       } else {
-        res.statusCode = 403;
-        res.json({ status: 403, message: "Denied due to tweaked data" });
+        res.status(503);
+        res.json({ status: 503, message: "Service Unavailable" });
       }
-    } catch {
-      res.statusCode = 400;
-      res.json({ status: 400, message: "Bad Request" });
+
+    } else {
+      res.status(403);
+      res.json({ status: 403, message: "Denied" });
     }
-    return;
+
+    res.status(200);
+    res.json(requestExaminationResult.params);
+  } else {
+    res.status(400);
+    res.json({ status: 400, message: "Invalid Request" });
   }
-  res.statusCode = 400;
-  res.json({ status: 400, message: "Bad Request" });
 });
 
 export { router };

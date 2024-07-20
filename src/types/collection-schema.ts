@@ -5,7 +5,6 @@ export interface Client {
   name: string;
   organization: string;
   deviceId: string;
-  password: string;
   socketid: string | null;
   authid: string;
   clienttoken: string;

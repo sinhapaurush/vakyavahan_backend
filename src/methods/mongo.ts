@@ -7,8 +7,8 @@ import {
   UpdateResult,
 } from "mongodb";
 
-const DB_URI: string = process.env.MONGO_URI || "mongodb://localhost:27017";
-const DB_NAME: string = process.env.MONGO_DBNAME || "vakyavahan";
+export const DB_URI: string = process.env.MONGO_URI || "mongodb://localhost:27017";
+export const DB_NAME: string = process.env.MONGO_DBNAME || "vakyavahan";
 
 export enum CollectionName {
   client = "client",
