@@ -1,18 +1,26 @@
 /**
  * @author Paurush Sinha
  */
-import express, { Express, NextFunction, Request, Response, json, urlencoded } from "express";
+import express, {
+  Express,
+  NextFunction,
+  Request,
+  Response,
+  json,
+  urlencoded,
+} from "express";
 import dotenv from "dotenv";
 import http, { Server as HTTPServer } from "http";
 import { router as sendSMSRouter } from "./send-sms";
 import { router as newClientRouter } from "./new-client";
+import { router as existenceRouter } from "./check-existence";
 import SocketHandler from "./methods/socket";
 import { deleteUnusedAccountsEveryWeek } from "./methods/delete-spam";
 import { RequestContentType } from "./types/request-type";
 
 // CONFIGURING .env
 dotenv.config();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // INITIALIZING EXPRESS
 const app: Express = express();
@@ -32,10 +40,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-
 // CONFIGURING EXTERNAL ROUTES
 app.use(sendSMSRouter);
 app.use(newClientRouter);
+app.use(existenceRouter);
 
 // NOT FOUND ROUTE
 app.get("*", (req: Request, res: Response) => {

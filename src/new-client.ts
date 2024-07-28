@@ -2,7 +2,6 @@ import { Request, Response, Router } from "express";
 import { checkRequest, RequestExamination, RequestMetaData } from "./methods/check-request";
 import { RequestContentType } from "./types/request-type";
 import { createNewUser, NewUserProcessResponse } from "./methods/new-user";
-import { Collection, Db, MongoClient } from "mongodb";
 
 const router = Router();
 
@@ -14,6 +13,7 @@ const acceptedRequest: RequestMetaData = {
     "deviceid"
   ]
 };
+
 router.post("/new-user", async (req: Request, res: Response) => {
   const requestExaminationResult: RequestExamination = checkRequest(req, acceptedRequest);
   if (requestExaminationResult.result) {
@@ -34,9 +34,6 @@ router.post("/new-user", async (req: Request, res: Response) => {
       res.status(403);
       res.json({ status: 403, message: "Denied" });
     }
-
-    res.status(200);
-    res.json(requestExaminationResult.params);
   } else {
     res.status(400);
     res.json({ status: 400, message: "Invalid Request" });

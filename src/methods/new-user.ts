@@ -3,8 +3,6 @@ import { CollectionName, DB_NAME, DB_URI } from "./mongo";
 import { Client } from "../types/collection-schema";
 import { sha224, sha256 } from "js-sha256";
 
-
-
 /**
  * newUserSchema creates Document to store in the collection. It generates authid and clientid by itself.
  * @param name User Name
@@ -32,10 +30,9 @@ function newUserSchema(name: string, org: string, deviceid: string): Client {
     name: name,
     organization: org,
     deviceId: deviceid,
-    socketid: null
-  }
+    socketid: null,
+  };
 }
-
 
 export interface NewUserProcessResponse {
   success: boolean;
@@ -44,12 +41,16 @@ export interface NewUserProcessResponse {
 
 /**
  * createNewUser function creates a new client in the database if the user is non existent
- * @param name Take name of the user 
+ * @param name Take name of the user
  * @param org Take organisation name of the user
  * @param deviceid takes user's device id (IMEI of slot 1)
  * @author Paurush Sinha
  */
-export async function createNewUser(name: string, org: string, deviceid: string): Promise<NewUserProcessResponse> {
+export async function createNewUser(
+  name: string,
+  org: string,
+  deviceid: string
+): Promise<NewUserProcessResponse> {
   const connection: MongoClient = new MongoClient(DB_URI);
   const db: Db = connection.db(DB_NAME);
   const collection = db.collection(CollectionName.client);
@@ -61,25 +62,24 @@ export async function createNewUser(name: string, org: string, deviceid: string)
       if (dbResult.acknowledged) {
         return {
           success: true,
-          client: userSchema
+          client: userSchema,
         };
       } else {
         return {
           success: false,
           client: undefined,
-        }
+        };
       }
     } catch (e) {
       return {
         success: false,
         client: undefined,
-      }
+      };
     }
   } else {
     return {
       success: false,
       client: undefined,
-    }
+    };
   }
-
 }
