@@ -21,7 +21,7 @@ const failedRequest: RequestExamination = {
 };
 
 export function checkRequest(req: Request, metaData: RequestMetaData): RequestExamination {
-    if (req.header("Content-Type") !== metaData.contentType) {
+    if (!req.header("Content-Type")?.startsWith(metaData.contentType)) {
         return failedRequest;
     }
     const realParameters = Object.keys(req.body);

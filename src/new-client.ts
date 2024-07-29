@@ -15,7 +15,10 @@ const acceptedRequest: RequestMetaData = {
 };
 
 router.post("/new-user", async (req: Request, res: Response) => {
+  console.log(req.body);
+  console.log(req.headers);
   const requestExaminationResult: RequestExamination = checkRequest(req, acceptedRequest);
+  console.log(requestExaminationResult);
   if (requestExaminationResult.result) {
     const { name, org, deviceid } = requestExaminationResult.params;
 

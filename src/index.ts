@@ -33,9 +33,9 @@ export const wsObject = new SocketHandler(server);
 app.use((req: Request, res: Response, next: NextFunction) => {
   const contentType = req.header("Content-Type");
 
-  if (contentType === RequestContentType.json) {
+  if (contentType?.startsWith(RequestContentType.json)) {
     json()(req, res, next);
-  } else if (contentType === RequestContentType.form) {
+  } else if (contentType?.startsWith(RequestContentType.form)) {
     urlencoded({ extended: false })(req, res, next);
   } else {
     next();
