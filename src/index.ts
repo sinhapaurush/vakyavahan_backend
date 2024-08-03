@@ -13,6 +13,7 @@ import dotenv from "dotenv";
 import http, { Server as HTTPServer } from "http";
 import { router as sendSMSRouter } from "./send-sms";
 import { router as newClientRouter } from "./new-client";
+import { router as updateClientRouter } from './update-profile';
 import { router as existenceRouter } from "./check-existence";
 import SocketHandler from "./methods/socket";
 import { deleteUnusedAccountsEveryWeek } from "./methods/delete-spam";
@@ -31,6 +32,7 @@ export const wsObject = new SocketHandler(server);
 
 // PROCESS API DATA TO JSON
 app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(req.url);
   const contentType = req.header("Content-Type");
 
   if (contentType?.startsWith(RequestContentType.json)) {
@@ -46,6 +48,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(sendSMSRouter);
 app.use(newClientRouter);
 app.use(existenceRouter);
+app.use(updateClientRouter);
 
 // NOT FOUND ROUTE
 app.get("*", (req: Request, res: Response) => {
