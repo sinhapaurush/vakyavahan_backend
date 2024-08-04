@@ -10,11 +10,12 @@ import DBHandler, { CollectionName } from "./methods/mongo";
 const router = Router();
 
 async function fetchRecordByDeviceId(
-  deviceId: string,
+  auth: string,
+  client: string,
   res: Response
 ): Promise<void> {
   const db = new DBHandler();
-  const result = await db.select(CollectionName.client, { deviceId: deviceId });
+  const result = await db.select(CollectionName.client, { authid: auth, clienttoken: client });
   db.close();
   if (result) {
     res.status(200);
@@ -31,13 +32,13 @@ async function fetchRecordByDeviceId(
 
 const acceptedRequest: RequestMetaData = {
   contentType: "application/json",
-  parameters: ["deviceid"],
+  parameters: ["auth", "client"],
 };
 router.post("/check-exists", (req: Request, res: Response) => {
   const matchRequest: RequestExamination = checkRequest(req, acceptedRequest);
-  if (matchRequest) {
-    const { deviceid }: { deviceid: string } = req.body;
-    fetchRecordByDeviceId(deviceid, res);
+  if (matchRequest.result) {
+    const { auth, client }: { auth: string, client: string } = req.body;
+    fetchRecordByDeviceId(auth, client, res);
     return;
   } else {
     return sendResponse(res, 404, "Not found");
