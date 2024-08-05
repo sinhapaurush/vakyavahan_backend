@@ -18,7 +18,7 @@ const acceptedRequest: RequestMetaData = {
 router.post("/send-sms", async (req: Request, res: Response) => {
   const matchedRequest: RequestExamination = checkRequest(req, acceptedRequest);
   if (matchedRequest) {
-    const { authtoken, message, target }: SendApiRequestData = req.query;
+    const { authtoken, message, target }: SendApiRequestData = matchedRequest.params;
     if (!(authtoken && message && target)) {
       res.statusCode = 400;
       res.json({

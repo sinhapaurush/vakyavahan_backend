@@ -13,7 +13,7 @@ const acceptedRquest: RequestMetaData = {
     ]
 };
 
-router.post("auto-login", async (req: Request, res: Response) => {
+router.post("/auto-login", async (req: Request, res: Response) => {
     const requestMatch: RequestExamination = checkRequest(req, acceptedRquest);
 
     if (requestMatch.result) {

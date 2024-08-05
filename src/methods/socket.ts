@@ -19,23 +19,32 @@ export default class SocketHandler {
 
   private initializeSocket() {
     this.io.on("connection", (socket: Socket) => {
-
-      socket.on("credentials", async (credentials) => {
-        if (credentials.client && credentials.auth) {
-
-          const successInInsertion: boolean = await addSocketIDinDB(
-            credentials.clientToken,
-            credentials.authToken,
-            socket.id
-          );
-          if (!successInInsertion) {
+      console.log(socket.id);
+      let gotCredential: boolean = false;
+      socket.on("credentials", async (cred: string) => {
+        try {
+          const credentials = JSON.parse(cred);
+          if (credentials.client && credentials.auth) {
+            gotCredential = true;
+            const successInInsertion: boolean = await addSocketIDinDB(
+              credentials.client,
+              credentials.auth,
+              socket.id
+            );
+            if (!successInInsertion) {
+              socket.disconnect();
+            }
+          } else {
+            this.disconnectSocketFromDB(socket.id);
             socket.disconnect();
           }
-        } else {
-          this.disconnectSocketFromDB(socket.id);
+        } catch (e) {
           socket.disconnect();
         }
       });
+      setTimeout(() => {
+        if (!gotCredential) socket.disconnect();
+      }, 10000);
       socket.on("disconnect", () => {
         this.disconnectSocketFromDB(socket.id);
       });
